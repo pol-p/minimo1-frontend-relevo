@@ -4,6 +4,7 @@ import { OfertaListComponent } from './components/ofertas/oferta-list/oferta-lis
 import { OfertaDetalle } from './components/ofertas/oferta-detalle/oferta-detalle.component';
 import { UsuariosListComponent } from './components/usuarios/usuarios-list/usuarios-list.component';
 import { PerfilComponent } from './components/usuarios/perfil/perfil.component';
+import { PlanificacioComponent } from './components/planificacio/planificacio.component';
 
 // Layouts
 import { PublicLayoutComponent } from './components/shared/public-layout/public-layout.component';
@@ -27,6 +28,7 @@ export const routes: Routes = [
       { path: 'ofertas/:id', component: OfertaDetalle },
       { path: 'usuarios', component: UsuariosListComponent },
       { path: 'perfil', component: PerfilComponent },
+      { path: 'planificacions', component: PlanificacioComponent },
       
     ]
   },
@@ -40,6 +42,7 @@ export const routes: Routes = [
       { path: 'usuarios', component: AdminUsuariosComponent },
       { path: 'ofertas', component: OfertasAdminComponent },
       { path: 'solicitudes', component: SolicitudesComponent },
+      { path: 'planificacions', component: PlanificacioComponent },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
     ]
   },

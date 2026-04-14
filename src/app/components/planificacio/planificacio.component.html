@@ -1,0 +1,111 @@
+<div class="planning-wrapper">
+  <div class="header-banner">
+    <div class="header-content">
+      <h1 class="page-title">Planes y Objetivos</h1>
+      <p class="page-subtitle">Gestiona las metas de los usuarios en tiempo real</p>
+    </div>
+  </div>
+
+  <div class="planning-content">
+    
+    <!-- Columna Izquierda: Buscador y Formulario -->
+    <aside class="sidebar-section">
+      <!-- Buscador -->
+      <section class="premium-card">
+        <h3 class="section-subtitle">Buscar</h3>
+        <app-search-input placeholder="Filtrar por título o usuario..." (onSearch)="updateSearch($event)">
+        </app-search-input>
+      </section>
+
+      <!-- Formulario de Creación -->
+      <section class="premium-card create-card">
+        <h3 class="section-subtitle">Nuevo Plan</h3>
+        <form [formGroup]="planForm" (ngSubmit)="crearPlanificacio()" class="premium-form">
+          <div class="form-group">
+            <select formControlName="usuario" class="form-control">
+              <option value="" disabled selected>-- Selecciona un Usuario --</option>
+              @for (u of usuarios(); track u._id) {
+              <option [value]="u._id">{{ u.fullName }}</option>
+              }
+            </select>
+          </div>
+          <div class="form-group">
+            <input type="text" formControlName="titulo" placeholder="Título del Plan" class="form-control">
+          </div>
+          <div class="form-group">
+            <input type="text" formControlName="fitaDesc" placeholder="Primer objetivo..." class="form-control">
+          </div>
+          <button type="submit" [disabled]="planForm.invalid" class="btn-primary w-full">
+            Crear Plan
+          </button>
+        </form>
+      </section>
+    </aside>
+
+    <!-- Columna Derecha: Listado de Planes -->
+    <main class="main-section">
+      @if (isLoading()) {
+      <div class="loading-spinner">
+        <div class="spinner"></div>
+        <p>Cargando datos...</p>
+      </div>
+      }
+
+      <div class="plans-grid">
+        @for (plan of paginatedPlans(); track plan._id) {
+        <article class="plan-card">
+          <header class="plan-header">
+            <div class="plan-titles">
+              <span class="user-badge">{{ getUsuarioName(plan.usuario) }}</span>
+              <h2 class="plan-title">{{ plan.titulo }}</h2>
+            </div>
+            
+            <div class="progress-wrapper">
+              <div class="progress-badge" [class.completed]="getProgreso(plan) === 100">
+                {{ getProgreso(plan) }}%
+              </div>
+            </div>
+          </header>
+
+          <div class="plan-body">
+            <h4 class="fites-title">Lista de Hitos</h4>
+            <ul class="fites-list">
+              @for (fita of plan.fites; track $index) {
+              <li class="fita-item" [class.is-done]="fita.completada">
+                <label class="custom-checkbox">
+                  <input type="checkbox" [checked]="fita.completada" (change)="toggleFita(plan, $index)">
+                  <span class="checkmark"></span>
+                  <span class="fita-text">{{ fita.descripcion }}</span>
+                </label>
+              </li>
+              }
+            </ul>
+          </div>
+
+          <footer class="plan-footer">
+            <div class="add-fita-inline">
+              <input #fitaInput type="text" placeholder="Añade un hito rápido..." class="form-control input-sm" (keydown.enter)="addFita(plan, fitaInput)">
+              <button class="btn-icon" (click)="addFita(plan, fitaInput)" title="Añadir">
+                <span style="font-weight: bold; font-size: 1.4rem;">+</span>
+              </button>
+            </div>
+          </footer>
+        </article>
+        } @empty {
+        <div class="empty-state">
+          <p>No se han encontrado planes.</p>
+        </div>
+        }
+      </div>
+
+      <!-- Controles de Paginación -->
+      @if (totalPages() > 1) {
+      <div class="pagination-glass">
+        <button class="btn-page" (click)="goToPage(-1)" [disabled]="currentPage() === 1">Anterior</button>
+        <span class="page-indicator">Página {{ currentPage() }} de {{ totalPages() }}</span>
+        <button class="btn-page" (click)="goToPage(1)" [disabled]="currentPage() === totalPages()">Siguiente</button>
+      </div>
+      }
+    </main>
+  </div>
+</div>
